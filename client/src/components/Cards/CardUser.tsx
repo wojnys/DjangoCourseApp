@@ -5,27 +5,15 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import axios from "axios";
 
 type CardUserProps = {
-    id: number
-    firstname: string
-    lastname: string
+    id: number,
+    firstname: string,
+    lastname: string,
     email: string
-    phone: number
-    courses: Course[],
+    phone: number,
     userWasDeleted: (userId:number, status:number) => void
 }
-type Course = {
-    id: number
-    name: string
-    description: string
-    price: number
-    topic: Topic
-}
-type Topic = {
-    id: number
-    name: string
-}
 
-function CardUser({id, firstname, lastname, email, phone, courses, userWasDeleted}: CardUserProps) {
+function CardUser({id, firstname, lastname, email, phone, userWasDeleted}: CardUserProps) {
 
     const deleteUser = async (userId:number) => {
         try {
@@ -55,37 +43,6 @@ function CardUser({id, firstname, lastname, email, phone, courses, userWasDelete
                 title={`${firstname} ${lastname}`}
                 subheader={`${phone}, ${email}`}
             />
-            <CardContent sx={{display: "flex", flexWrap: "wrap", gap: 3}}>
-                {
-                    courses.length === 0 && (
-                        <Box sx={{textAlign: "center", width:1}}>
-                            Any courses was purchased
-                        </Box>
-                    )
-                }
-                {
-                    courses.map((course, index) => (
-                        <Box key={index} sx={{
-                            display: "flex",
-                            flexWrap: "wrap",
-                            flexDirection: "column",
-                            padding: 1,
-                            backgroundColor: "#ffebee",
-                            borderRadius: 3
-                        }}>
-                            <Typography sx={{textAlign: "left", padding: 1}}>{course.name}</Typography>
-                            <Box sx={{
-                                borderRadius: 1,
-                                bgcolor: 'error.main',
-                                color: "white",
-                                padding:0.5
-                            }}>
-                                <Typography sx={{fontSize: 14}}>   {course.topic.name}</Typography>
-                            </Box>
-                        </Box>
-                    ))
-                }
-            </CardContent>
         </Card>
     );
 }

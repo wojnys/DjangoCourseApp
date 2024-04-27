@@ -26,6 +26,7 @@ function AllCoursesPage() {
         try {
             const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/api/course`)
             setCourses(response.data)
+            console.log(response.data)
         } catch (e) {
             showNotification(["Cannot connect to the server"], 'error');
         }

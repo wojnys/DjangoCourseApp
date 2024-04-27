@@ -45,6 +45,7 @@ function CreateCoursePage() {
                 price: data.price,
                 topicId: data.topicId
             })
+            console.log(response)
             showNotification([ 'Course was successfully created' ], 'success');
         } catch (e) {
             showNotification([ 'Cannot connect to server' ], 'error');

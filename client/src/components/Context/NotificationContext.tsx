@@ -36,7 +36,7 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
         <NotificationContext.Provider value={{ showNotification, hideNotification }}>
     {children}
     {notification && (
-        <Container>
+        <Container style={{margin:10}}>
             {
                 notification.messages.length > 0 && (
                     <Alert severity={`${notification.type}`}>

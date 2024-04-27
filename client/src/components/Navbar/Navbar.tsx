@@ -1,6 +1,8 @@
-import {Fragment} from 'react'
+import {Fragment, useContext, useState} from 'react'
 import {Disclosure, Menu, Transition} from '@headlessui/react'
 import {BellIcon} from '@heroicons/react/24/outline'
+import AuthContext from "../Context/AuthProvider";
+import {Button} from "@mui/material";
 
 
 // Admin navigation
@@ -36,9 +38,20 @@ function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(' ')
 }
 
+
 export default function Navbar() {
 
+   // let {user, logoutUser} = useContext(AuthContext)
     return (
+        // <>
+        //     {/*{user ? (*/}
+        //     {/*    <p onClick={logoutUser}>Logout</p>*/}
+        //     {/*) : (*/}
+        //     {/*    <p>Tyr to logged in</p>*/}
+        //     {/*)}*/}
+        //     {/*{user && <p>Hello {user}!</p>}*/}
+        // </>
+
         <Disclosure as="nav" className="bg-gray-800">
 
             <>
@@ -122,12 +135,9 @@ export default function Navbar() {
                                         className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                                         {
                                             <Menu.Item>
-                                                <a
-                                                    href="#"
-                                                    className={classNames('block px-4 py-2 text-sm text-gray-700')}
-                                                >
-                                                    Your Profile
-                                                </a>
+                                                <Button onClick={() => { localStorage.clear()} } sx={{padding:0.5}}>
+                                                    Logout
+                                                </Button>
                                             </Menu.Item>
                                         }
                                     </Menu.Items>
@@ -136,24 +146,6 @@ export default function Navbar() {
                         </div>
                     </div>
                 </div>
-
-                {/*<Disclosure.Panel className="sm:hidden">*/}
-                {/*    <div className="space-y-1 px-2 pb-3 pt-2">*/}
-                {/*        {navigation.map((item) => (*/}
-                {/*            <Link*/}
-                {/*                key={item.name}*/}
-                {/*                to={item.href}*/}
-                {/*                className={classNames(*/}
-                {/*                    item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',*/}
-                {/*                    'block rounded-md px-3 py-2 text-base font-medium'*/}
-                {/*                )}*/}
-                {/*                aria-current={item.current ? 'page' : undefined}*/}
-                {/*            >*/}
-                {/*                {item.name}*/}
-                {/*            </Link>*/}
-                {/*        ))}*/}
-                {/*    </div>*/}
-                {/*</Disclosure.Panel>*/}
             </>
 
         </Disclosure>
