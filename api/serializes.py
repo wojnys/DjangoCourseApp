@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Course, Topic, UserProfile, UserCourseOrder
+from .models import Course, Topic, UserProfile, UserCourseOrder, Video, CourseVideo
 from django.contrib.auth.models import User
 
 # This is higher model from django, not created by wojnys
@@ -39,5 +39,22 @@ class UserCourseOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserCourseOrder
         fields = ('course', 'user', 'order_price')
+
+class VideoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Video
+        fields = ('id','caption', 'video')
+    
+class CourseVideoPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CourseVideo
+        fields=('course', 'video')
+            
+class CourseVideoSerializer(serializers.ModelSerializer):
+    course = CourseSerializer()
+    video = VideoSerializer()
+    class Meta:
+        model = CourseVideo
+        fields=('course', 'video')
 
 

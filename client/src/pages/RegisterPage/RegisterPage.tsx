@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Button, Container, Grid} from "@mui/material";
 import TextField from "@mui/material/TextField";
 import {makeStyles} from "@material-ui/core/styles";
@@ -65,10 +65,10 @@ function RegisterPage() {
     }
 
     return (
-        <div className={"flex w-100 justify-center h-screen items-center flex-col"}>
-            <h1 className={"font-bold text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400 text-3xl "}>Register Form</h1>
+        <Container sx={{ padding:10}}>
+            <h1 className={"font-bold text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400 text-3xl p-4"}>Register Form</h1>
             <form className={classes.root} onSubmit={handleSubmit(onSubmit)}>
-                <Grid spacing={3} p={4} container>
+                <Grid spacing={3} container>
                 <Grid item xs={12} sm={12} md={6}>
                         <TextField id="firstname" label="Firstname" variant="outlined"
                                    type={"text"} {...register("firstname", {})}/>
@@ -100,7 +100,7 @@ function RegisterPage() {
                     </Grid>
                 </Grid>
             </form>
-        </div>
+        </Container>
     );
 }
 

@@ -3,11 +3,13 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import permissions
 from rest_framework.decorators import api_view, permission_classes
-from .models import Course, Topic, UserProfile
-from .serializes import CourseSerializer, TopicSerializer, UserProfileSerializer, UserSerializer, CoursePostSerializer
+from .models import Course, Topic, UserProfile, Video
+from .serializes import CourseSerializer, TopicSerializer, UserProfileSerializer, UserSerializer, CoursePostSerializer, VideoSerializer, CourseVideoPostSerializer
 
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
+from django.views.decorators.csrf import csrf_exempt
+from django.db import transaction
 
 from django.contrib.auth.models import User
 
@@ -39,9 +41,6 @@ def get_profile(request):
     return Response(serializer.data)
         
 class CourseView(APIView):
-    # add permission to check if user is authenticated
-    # permission_classes = [permissions.IsAuthenticated]
-
     # 1. List all
     def get(self, request, *args, **kwargs):
         courses = Course.objects.select_related('topic').all()
@@ -50,19 +49,43 @@ class CourseView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     # 2. Create
+    @transaction.atomic
     def post(self, request, *args, **kwargs):
-        data = {
-            'name': request.data.get('name'),
-            'description': request.data.get('description'),
-            'price': request.data.get('price'),
-            'topic': request.data.get('topicId'),
-        }
-        serializer = CoursePostSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({ "data": serializer.data }, status=status.HTTP_201_CREATED)
+        try:
+            data = {
+                'name': request.data.get('name'),
+                'description': request.data.get('description'),
+                'price': request.data.get('price'),
+                'topic': request.data.get('topicId'),
+            }
+            
+            course_serializer = CoursePostSerializer(data=data)
+            if course_serializer.is_valid():
+                
+                with transaction.atomic():
+                    # save to course table
+                    course_serializer.save()
 
-        return Response({"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+                    ## save video to table
+                    print(request.data.get("videoFile"))
+                    video_file = request.FILES['videoFile']
+                    data = {
+                        "caption":None,
+                        "video":video_file
+                    }
+                    # save to video table
+                    video_serializer = VideoSerializer(data=data)
+                    if video_serializer.is_valid():
+                        video_serializer.save()
+                    
+                    # save to course_video table
+                    serializer = CourseVideoPostSerializer(data={"course":course_serializer.data['id'], "video":video_serializer.data['id']})
+                    if serializer.is_valid():
+                        serializer.save()
+                        return Response({ "data": serializer.data }, status=status.HTTP_201_CREATED)
+            
+        except Exception as e:
+            return Response({"errors": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 class TopicView(APIView):
     def get(self, request):
@@ -96,7 +119,7 @@ class UserProfileView(APIView):
         try:
             # Check if user with the specified email already exists
             user = User.objects.get(email=data_user["email"])
-            return Response({'error': 'Email already exists'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'errors': 'Email already exists'}, status=status.HTTP_400_BAD_REQUEST)
         
         except User.DoesNotExist:
             
@@ -128,3 +151,4 @@ class UserProfileView(APIView):
             return Response({"data":user_id}, status=status.HTTP_200_OK)
         else:
             return Response({"errors":"User not found"}, status=status.HTTP_404_NOT_FOUND)
+    

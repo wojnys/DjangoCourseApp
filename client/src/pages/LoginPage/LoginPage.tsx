@@ -1,6 +1,6 @@
 import React, {useContext} from 'react';
 import AuthContext from "../../components/Context/AuthProvider";
-import {Button, Grid} from "@mui/material";
+import {Button, Container, Grid} from "@mui/material";
 import TextField from "@mui/material/TextField";
 import {useForm} from "react-hook-form";
 
@@ -23,8 +23,8 @@ function LoginPage() {
     }
 
     return (
-        <div className={"flex w-100 justify-center h-screen items-center flex-col"}>
-            <h1 className={"font-bold text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400 text-3xl"}>Login Form</h1>
+        <Container sx={{ padding:10}}>
+            <h1 className={"font-bold text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400 text-3xl p-4"}>Login Form</h1>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <Grid spacing={3} p={4} container>
                     <Grid item xs={12} sm={12}>
@@ -42,7 +42,7 @@ function LoginPage() {
                     </Grid>
                 </Grid>
             </form>
-        </div>
+        </Container>
     );
 }
 

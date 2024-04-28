@@ -3,7 +3,7 @@ import AuthContext from "../../components/Context/AuthProvider";
 
 const MainPage = () => {
     const { authTokens, logoutUser } = useContext(AuthContext);
-    let [profile, setProfile] = useState<any[] >([])
+    let [profile, setProfile] = useState<any >({})
 
     useEffect(() => {
         getProfile()
@@ -33,7 +33,13 @@ const MainPage = () => {
 
     return (
         <div>
-            <p>You are logged in to the homepage!</p>
+            {
+                profile?.user ? (
+                    <>AUTHENTICATED USER</>
+                ) : (
+                    <>UNAUTHENTICATED USER</>
+                )
+            }
         </div>
     )
 }

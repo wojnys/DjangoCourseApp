@@ -16,9 +16,9 @@ import {AuthProvider} from "./components/Context/AuthProvider";
 function App() {
     return (
         <div className="App">
-            <Navbar/>
             <BrowserRouter>
                 <AuthProvider>
+                    <Navbar/>
                     <Routes>
                         <Route path="/" element={<MainPage/>}/>
                         /* Course routes */

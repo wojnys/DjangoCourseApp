@@ -1,7 +1,6 @@
 import { createContext, useState, useEffect } from 'react'
 import {jwtDecode} from 'jwt-decode';
 import { useNavigate } from 'react-router-dom'
-import axios from "axios";
 
 const AuthContext = createContext()
 
@@ -17,7 +16,7 @@ export const AuthProvider = ({children}) => {
 
     let loginUser = async ({username, password}) => {
 
-        const response = await fetch('http://127.0.0.1:8000/api/token/', {
+        const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/token/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -97,3 +96,4 @@ export const AuthProvider = ({children}) => {
         </AuthContext.Provider>
     )
 }
+
