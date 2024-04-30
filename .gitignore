@@ -32,6 +32,6 @@
 /**/migrations
 
 /**/__pycache__/
-/**?api/__pycache__/
+/**/api/__pycache__/
 /**/media
 /**/.DS_Store

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Box,  Container} from "@mui/material";
+import {Box, Container} from "@mui/material";
 import axios from "axios";
 import CardCourse from "../../../../components/Cards/CardCourse";
 import {useNotification} from "../../../../components/Context/NotificationContext";
@@ -20,7 +20,7 @@ type Topic = {
 function AllCoursesPage() {
 
     const [courses, setCourses] = useState<Course[]>([]);
-    const { showNotification } = useNotification();
+    const {showNotification} = useNotification();
 
     const fetchCourses = async () => {
         try {
@@ -36,13 +36,15 @@ function AllCoursesPage() {
         fetchCourses();
     }, []);
 
-    courses.map((course) => console.log(course.topic?.name))
     return (
-        <Container sx={{ width: 1 }}>
+        <Container sx={{width: 1}}>
             <h1 className={"text-left text-xl p-6"}>All Courses</h1>
             <Box display="flex" justifyContent="center" flexWrap={"wrap"} gap={3}>
                 {courses.map((course, index) => (
-                    <CardCourse key={index} description={course.description} price={course.price} id={course.id} topicName={course.topic?.name} topicId={course.topic?.id} name={course.name} index={index+1}/>
+                    <CardCourse key={index} description={course.description} price={course.price} id={course.id}
+                                topicName={course.topic?.name} topicId={course.topic?.id} name={course.name}
+                                detailLink={`/course/detail/${course.id}`}
+                                index={index + 1}/>
                 ))}
             </Box>
         </Container>

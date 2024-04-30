@@ -20,9 +20,10 @@ class Course(models.Model):
     price = models.IntegerField(null=False)
     topic = models.ForeignKey(Topic, related_name='topic',  on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+    videos = models.ManyToManyField('Video', through='CourseVideo')
 
     def __str__(self):
-        return f'{self.name}'
+        return f'{self.id} - {self.name}'
 
     class Meta:
         ordering = ['id']
@@ -37,7 +38,7 @@ class UserProfile(models.Model):
     # user_course_orders = models.ManyToManyField(Course, through='UserCourseOrder')
 
     def __str__(self):
-        return f'{self.firstname} - {self.lastname} - {self.user.username} - {self.user.email}'
+        return f'{self.id} - {self.firstname} - {self.lastname} - {self.user.username} - {self.user.email}'
 
 class UserCourseOrder(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)

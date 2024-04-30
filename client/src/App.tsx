@@ -12,6 +12,10 @@ import RegisterPage from "./pages/RegisterPage/RegisterPage";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import PrivateRoute from "./utils/PrivateRoute";
 import {AuthProvider} from "./components/Context/AuthProvider";
+import ProfilePage from "./pages/Admin/User/ProfilePage/ProfilePage";
+import CourseDetailPage from "./pages/LoggedUser/Course/CourseDetail/CourseDetailPage";
+import UserOrdersPage from "./pages/LoggedUser/Orders/UserOrdersPage";
+import UserOrderDetailPage from "./pages/LoggedUser/Orders/UserOrderDetailPage";
 
 function App() {
     return (
@@ -26,10 +30,17 @@ function App() {
                         <Route path="/admin/course/create"
                                element={<PrivateRoute> <CreateCoursePage/> </PrivateRoute>}/>
                         <Route path="/admin/course/all" element={<PrivateRoute> <AllCoursesPage/> </PrivateRoute>}/>
+                        <Route path="/course/detail/:courseId" element={<PrivateRoute> <CourseDetailPage/> </PrivateRoute>}/>
 
                         /* User routes */
                         <Route path="/admin/user" element={<PrivateRoute> <MainUserPage/> </PrivateRoute>}/>
                         <Route path="/admin/user/all" element={<PrivateRoute> <AllUsersPage/> </PrivateRoute>}/>
+
+                        <Route path="/user/profile/orders" element={<PrivateRoute> <UserOrdersPage/> </PrivateRoute>}/>
+                        <Route path="/user/profile/order/:orderId" element={<PrivateRoute> <UserOrderDetailPage/> </PrivateRoute>}/>
+
+                        /* Profile routes */
+                        <Route path="/user/profile" element={<PrivateRoute> <ProfilePage/> </PrivateRoute>}/>
 
                         /* Register and login routes */
                         <Route path={"/register"} element={<RegisterPage/>}/>

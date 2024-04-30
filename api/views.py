@@ -4,7 +4,9 @@ from rest_framework import status
 from rest_framework import permissions
 from rest_framework.decorators import api_view, permission_classes
 from .models import Course, Topic, UserProfile, Video
-from .serializes import CourseSerializer, TopicSerializer, UserProfileSerializer, UserSerializer, CoursePostSerializer, VideoSerializer, CourseVideoPostSerializer
+from .serializes import *
+from rest_framework import viewsets
+from rest_framework.decorators import action
 
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -40,17 +42,51 @@ def get_profile(request):
     serializer = UserProfileSerializer(user_profile, many=False)
     return Response(serializer.data)
         
-class CourseView(APIView):
+class CourseView(viewsets.ViewSet):
     # 1. List all
-    def get(self, request, *args, **kwargs):
+    @action(detail=False, methods=['get'])
+    def get_all(self, request, *args, **kwargs):
         courses = Course.objects.select_related('topic').all()
 
         serializer = CourseSerializer(courses, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+        
+    # GET DETAIL
+    @action(detail=True, methods=['get'])
+    def get_detail(self, request, course_id = None):
+        try:
+            course = Course.objects.get(id=course_id)
+            serializer = CourseSerializer(course)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Course.DoesNotExist:
+            return Response({'error': 'Course not found'}, status=status.HTTP_404_NOT_FOUND)
 
-    # 2. Create
+    # POST create order
+    @action(detail=False, methods=['post'])
+    def post_create_course_order(self, request, course_id = None, user_id = None):
+        try:
+            course = Course.objects.get(id=course_id)
+            user_profile = UserProfile.objects.get(user=user_id)
+            print(user_profile.id)
+            data = {
+                'course': course_id,
+                'user': user_profile.id,
+                'order_price': course.price
+            }
+            order_serializer = UserCourseOrderPostSerializer(data=data)
+            if order_serializer.is_valid():
+                order_serializer.save()
+                return Response({"data":order_serializer.data, "message":"Sucessfuly purchased"}, status=status.HTTP_201_CREATED)
+            return Response(order_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Course.DoesNotExist:
+            return Response({'errors': 'Course not found'}, status=status.HTTP_404_NOT_FOUND)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+    # POST reate course
     @transaction.atomic
-    def post(self, request, *args, **kwargs):
+    @action(detail=False, methods=['post'])
+    def post_create_course(self, request, *args, **kwargs):
         try:
             data = {
                 'name': request.data.get('name'),
@@ -86,6 +122,8 @@ class CourseView(APIView):
             
         except Exception as e:
             return Response({"errors": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+    
 
 class TopicView(APIView):
     def get(self, request):
@@ -105,8 +143,9 @@ class TopicView(APIView):
         return Response({"errors": serializer.errors},
                         status=status.HTTP_400_BAD_REQUEST)
 
-class UserProfileView(APIView):
-    def post(self, request):
+class UserProfileView(viewsets.ViewSet):
+    @action(detail=False, methods=['post'])
+    def post_create_user(self, request):
         data_user = {
             'email': request.data.get('email'),
             'password': request.data.get('password'),
@@ -137,14 +176,36 @@ class UserProfileView(APIView):
         except Exception as e:
             return Response({'errors': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
-
-    def get(self, request):
+    @action(detail=False, methods=['get'])
+    def get_all(self, request):
         user_course_orders = UserProfile.objects.all()
 
         serializer = UserProfileSerializer(user_course_orders, many=True)
         return Response({"data": serializer.data}, status=status.HTTP_200_OK)
 
-    def delete(self, request, user_id = None):
+    @action(detail=False, methods=['get'])
+    def get_all_orders(self, request, user_id = None):
+        try:
+            user = UserProfile.objects.get(user=user_id)
+            orders = UserCourseOrder.objects.filter(user=user.id)
+            serializer = UserCourseOrderSerializer(orders, many=True)
+            return Response({"data": serializer.data}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'errors': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+    @action(detail=False, methods=['get'])
+    def get_order_detail(self, request, user_id=None, order_id=None):
+        try:
+            user = UserProfile.objects.get(user=user_id)
+            order = UserCourseOrder.objects.get(pk = order_id, user=user.id)
+            print(order)
+            serializers = UserCourseOrderSerializer(order)
+            return Response({"data": serializers.data}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'errors': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)    
+    
+    @action(detail=False, methods=['delete'])
+    def delete_user(self, request, user_id = None):
         user = UserProfile.objects.filter(id=user_id).first()
         if user:
             user.delete()

@@ -12,14 +12,15 @@ type CardComponentProps = {
     price: number,
     topicId: number,
     topicName: string,
-    index: number
+    index: number,
+    detailLink: string
 }
 
-function CardCourse({description, price, id, topicName, topicId, name, index}: CardComponentProps) {
+function CardCourse({description, price, id, topicName, topicId, detailLink, name, index}: CardComponentProps) {
 
     const navigate = useNavigate();
     const courseDetail = () => {
-        navigate(`admin/course/${id}`);
+        navigate(detailLink);
     }
     return (
         <Card sx={{width: 345, height: 300}} onClick={courseDetail}>

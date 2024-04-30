@@ -41,7 +41,7 @@ function classNames(...classes: string[]) {
 
 export default function Navbar() {
 
-    let { user, logoutUser } = useContext(AuthContext)
+    let {user, logoutUser} = useContext(AuthContext)
     console.log(user)
     const currentUrl = String(window.location.href);
     console.log(currentUrl)
@@ -126,11 +126,27 @@ export default function Navbar() {
                                             <Menu.Items
                                                 className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                                                 {
-                                                    <Menu.Item>
-                                                        <Button onClick={logoutUser} sx={{padding:0.5}}>
-                                                            Logout
-                                                        </Button>
-                                                    </Menu.Item>
+                                                    <div className={"flex flex-col"}>
+                                                        <Menu.Item>
+                                                            <a
+                                                                href={"/user/profile"}
+                                                                className={classNames('block px-4 py-2 text-sm text-gray-700')}>
+                                                                Profile
+                                                            </a>
+                                                        </Menu.Item>
+                                                        <Menu.Item>
+                                                            <a
+                                                                href={"/user/profile/orders"}
+                                                                className={classNames('block px-4 py-2 text-sm text-gray-700')}>
+                                                                Display all orders
+                                                            </a>
+                                                        </Menu.Item>
+                                                        <Menu.Item>
+                                                            <Button onClick={logoutUser} sx={{padding: 0.5}}>
+                                                                Logout
+                                                            </Button>
+                                                        </Menu.Item>
+                                                    </div>
                                                 }
                                             </Menu.Items>
                                         </Transition>
@@ -138,10 +154,10 @@ export default function Navbar() {
                                 ) : (
                                     <>
                                         <div className="">
-                                            <a className={ `px-4 py-3 rounded-l-xl m-0 hover:bg-amber-500 transition ${currentUrl.includes("login") ? 'bg-amber-50 text-black' : 'bg-black text-white'}` }
+                                            <a className={`px-4 py-3 rounded-l-xl m-0 hover:bg-amber-500 transition ${currentUrl.includes("login") ? 'bg-amber-50 text-black' : 'bg-black text-white'}`}
                                                href={"/login"}>Login
                                             </a>
-                                            <a className={ `px-4 py-3 rounded-r-xl e m-0 hover:bg-amber-500 transition ${currentUrl.includes("register") ? 'bg-amber-50 text-black' : 'bg-black text-white'}` }
+                                            <a className={`px-4 py-3 rounded-r-xl e m-0 hover:bg-amber-500 transition ${currentUrl.includes("register") ? 'bg-amber-50 text-black' : 'bg-black text-white'}`}
                                                href={"/register"}>Register
                                             </a>
                                         </div>
