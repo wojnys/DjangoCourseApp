@@ -32,6 +32,7 @@ type Course = {
 type Topic = {
     id: number;
     name: string;
+    description: string
 };
 
 const useStyles: any = makeStyles((theme: any) => ({

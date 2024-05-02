@@ -16,6 +16,9 @@ import ProfilePage from "./pages/Admin/User/ProfilePage/ProfilePage";
 import CourseDetailPage from "./pages/LoggedUser/Course/CourseDetail/CourseDetailPage";
 import UserOrdersPage from "./pages/LoggedUser/Orders/UserOrdersPage";
 import UserOrderDetailPage from "./pages/LoggedUser/Orders/UserOrderDetailPage";
+import AllTopicsPage from "./pages/Admin/Topic/AllTopicsPage";
+import TopicDetailPage from "./pages/Admin/Topic/TopicDetailPage";
+import CreateTopicPage from "./pages/Admin/Topic/CreateTopicPage";
 
 function App() {
     return (
@@ -31,6 +34,11 @@ function App() {
                                element={<PrivateRoute> <CreateCoursePage/> </PrivateRoute>}/>
                         <Route path="/admin/course/all" element={<PrivateRoute> <AllCoursesPage/> </PrivateRoute>}/>
                         <Route path="/course/detail/:courseId" element={<PrivateRoute> <CourseDetailPage/> </PrivateRoute>}/>
+
+
+                        <Route path="/admin/topic/all" element={<PrivateRoute> <AllTopicsPage/> </PrivateRoute>}/>
+                        <Route path="/admin/topic/:topicId" element={<PrivateRoute> <TopicDetailPage/> </PrivateRoute>}/>
+                        <Route path="/admin/topic/create" element={<PrivateRoute> <CreateTopicPage/> </PrivateRoute>}/>
 
                         /* User routes */
                         <Route path="/admin/user" element={<PrivateRoute> <MainUserPage/> </PrivateRoute>}/>

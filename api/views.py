@@ -125,13 +125,15 @@ class CourseView(viewsets.ViewSet):
         
     
 
-class TopicView(APIView):
-    def get(self, request):
+class TopicView(viewsets.ViewSet):
+    @action(detail=False, methods=['get'])
+    def get_all(self, request):
         topics = Topic.objects.all()
         serializer = TopicSerializer(topics, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def post(self, request, *args, **kwargs):
+    @action(detail=False, methods=['post'])
+    def post_create_topic(self, request, *args, **kwargs):
         data = {
             'name': request.data.get('name'),
         }
@@ -142,6 +144,31 @@ class TopicView(APIView):
 
         return Response({"errors": serializer.errors},
                         status=status.HTTP_400_BAD_REQUEST)
+    
+    @action(detail=True, methods=['get'])
+    def get_topic_detail(self, request, topic_id = None):
+        try:
+            topic = Topic.objects.get(pk=topic_id)
+            serializer = TopicSerializer(topic)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'errors': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+    @action(detail=True, methods=['put'])
+    def update_topic(self, request, topic_id=None):
+        try:
+            data = {
+                "name": request.data.get("name")
+            }
+            Topic.objects.filter(pk=topic_id).update(name=data["name"])
+            updated_topic = Topic.objects.get(id=topic_id)
+            serializer = TopicSerializer(updated_topic)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+            
+        except Exception as e:
+            return Response({'errors': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 
 class UserProfileView(viewsets.ViewSet):
     @action(detail=False, methods=['post'])
@@ -203,6 +230,21 @@ class UserProfileView(viewsets.ViewSet):
             return Response({"data": serializers.data}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'errors': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)    
+    
+    @action(detail=False, methods=['put'])
+    def update_user_profile(self, request, user_id=None):
+        try:
+            data = {
+                "firstname": request.data.get("firstname"),
+                "lastname": request.data.get("lastname"),
+                "phone": request.data.get("phone")
+            }
+            UserProfile.objects.filter(user_id=user_id).update(firstname=data["firstname"], lastname=data["lastname"], phone=data["phone"])
+            updated_user = UserProfile.objects.get(user_id=user_id)
+            serializer = UserProfileSerializer(updated_user)
+            return Response({"message": "User profile updated", "data":serializer.data}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'errors': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     @action(detail=False, methods=['delete'])
     def delete_user(self, request, user_id = None):
