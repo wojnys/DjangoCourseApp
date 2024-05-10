@@ -56,25 +56,6 @@ function CourseDetailPage() {
 
     useEffect(() => {
         getCourseDetail()
-        // setVideoHide([
-        //     {
-        //         "videoId": 25,
-        //         "hide": true
-        //     },
-        //     {
-        //         "videoId": 26,
-        //         "hide": true
-        //     },
-        //     {
-        //         "videoId": 27,
-        //         "hide": true
-        //     },
-        //     {
-        //         "videoId": 28,
-        //         "hide": true
-        //     },
-        // ])
-
     }, []);
 
     const {user} = useContext(AuthContext)
@@ -103,9 +84,7 @@ function CourseDetailPage() {
             }
             return videoHide
         }))
-
-
-        console.log("clicked")
+        
     }
 
     console.log(videoHide)
